@@ -90,6 +90,10 @@ clf3 = ensemble.RandomForestRegressor(n_estimators=100)
 scores = cross_val_score(clf3, X, y, cv=5)
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
+clf4 = neighbors.KNeighborsRegressor(n_neighbors=5, weights='uniform')
+scores = cross_val_score(clf4, X, y, cv=5)
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
 # fit individual model.
 clf1.fit(X,y)
 
