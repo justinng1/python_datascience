@@ -13,6 +13,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn import linear_model
 from sklearn import tree
 from sklearn import ensemble
+from sklearn import preprocessing
 
 # joining two datasets together. (https://pandas.pydata.org/pandas-docs/stable/merging.html)
 train_features = pd.read_csv('../data/train_features.csv')
@@ -76,6 +77,7 @@ train = train.drop(['var11', 'var12', 'var56', 'var45', 'var98', 'var123'], axis
 # setting up to input into sklearn models.
 X = train.drop(['target', 'var0'], axis=1)
 y = train.target
+X_scaled = preprocessing.scale(X) # use this if you want to scale features.
 
 # different regressions with kfoldcv = 5.
 clf1 = linear_model.LinearRegression()
@@ -91,7 +93,7 @@ scores = cross_val_score(clf3, X, y, cv=5)
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 clf4 = neighbors.KNeighborsRegressor(n_neighbors=5, weights='uniform')
-scores = cross_val_score(clf4, X, y, cv=5)
+scores = cross_val_score(clf4, X_scaled, y, cv=5)
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 # fit individual model.
