@@ -120,3 +120,47 @@ d[col] = riser_enc
 train.replace(d, inplace=True)
 train.head()
 
+# general riser encoding function.
+#implement riser encoding on all the categorical variables.
+def riser_enc_dict(df, col_list, targetName):
+    ret_dict = {}
+    for col in col_list:
+        gb = df.groupby([col])
+        mean = gb[targetName].mean()
+        riser_enc = {}
+        
+        for l in mean.index:
+            riser_enc[l] = mean[l]
+            
+        ret_dict[col] = riser_enc
+        
+    riser_enc = {}
+    return ret_dict
+
+# Kfold CV (have to do riser encoding on each training fold, without the test)
+def kfold_cv(clf, df, targetName, nsplits):
+    scores = []
+    
+    kf = KFold(n_splits=nsplits, shuffle=True)
+    for train_ind, val_ind in kf.split(df):
+        
+        train = df.iloc[train_ind]
+        val = df.iloc[val_ind]
+        
+        cols_to_enc = ['companyId', 'jobType', 'degree', 'major', 'industry']
+        riser_dict = riser_enc_dict(train, cols_to_enc, targetName)
+        
+        train = train.replace(riser_dict, inplace=False)
+        val = val.replace(riser_dict, inplace=False)
+        
+        X_train = train.drop([targetName], axis=1)
+        y_train = train[targetName]
+        X_val = val.drop([targetName], axis=1)
+        y_val = val[targetName]
+    
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_val)
+        metric = np.sqrt(mean_squared_error(y_val, y_pred))
+        scores.append(metric)
+        
+    return scores
