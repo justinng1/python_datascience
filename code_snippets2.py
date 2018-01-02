@@ -21,3 +21,13 @@ for df_chunk in df:
   
 df_sampled = pd.concat(df_list)
 
+# getting the value counts of the entire dataset by chunks.
+value_counts_all = {}
+for df_chunk in df:
+  val_counts_chunk = df_chunk['col1'].value_counts()
+  for val in val_counts_chunk.index:
+    if val in value_counts_all:
+      value_counts_all[val] = value_counts_all[val] + val_counts_chunk[val]
+    else:
+      value_counts_all[val] = val_counts_chunk[val]
+
