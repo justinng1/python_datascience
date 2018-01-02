@@ -67,6 +67,9 @@ train[train.var2 == 'JUNIOR'].salary.var()
 # summary with multiple criteria.
 train[(train.var2 == 'CFO') & (train.var1 == 'COMP1')].target.describe()
 
+# dealing with missing values. (https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.fillna.html)
+train.fillnas(0, inplace=True)
+
 # dummy variables.
 train = pd.get_dummies(train, columns=['var1', 'var2', 'var3', 'var4', 'var5'])
 train.columns
