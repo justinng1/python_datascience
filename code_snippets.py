@@ -36,6 +36,20 @@ train['var1'].value_counts()
 plt.hist(df_train['var2'], bins=100)
 plt.show()
 
+def histogram(df, col_name, bins):
+    # look at loan_duration.
+    plt.hist(df[col_name], alpha=0.5, label=col_name, bins=bins)
+    plt.legend(loc='upper right')
+    plt.show()
+
+
+    
+    
+# boxplots.
+fig, axes = plt.subplots(figsize=(12, 5), sharey=True)
+district_df.loc[district_df['num_crimes95'] > 0 ,['crimes_per1000_95', 'crimes_per1000_96']].boxplot(return_type='axes')
+
+
 # get unique values of columns
 test_company = test['var1'].unique()
 train_company = train['var1'].unique()
@@ -43,6 +57,14 @@ train_company = train['var1'].unique()
 # see if the same values are in both datasets.
 np.in1d(test_company, train_company)
 np.in1d(train_company, test_company)
+
+# count how many are in account_df but not in owners?
+owners = disp_df.loc[disp_df['disp_type'] == 'OWNER']
+missing_account_ids = np.isin(account_df['account_id'], owners['account_id'], invert=True).sum()
+print('Missing account ids in owners: {}'.format(missing_account_ids))
+
+# barchart for categorical variables.
+disp_df['disp_type'].value_counts().plot(kind='bar', subplots=True)
 
 # group by functions.
 gb = train.groupby(['var1'])
